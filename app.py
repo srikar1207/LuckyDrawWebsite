@@ -5,10 +5,15 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import random
 import csv
+import os
+from dotenv import load_dotenv
+from apscheduler.schedulers.background import BackgroundScheduler
+
+load_dotenv()
 
 app = Flask(__name__)
 
-app.secret_key = "supersecretkey"
+app.secret_key = os.getenv("SECRET_KEY")
 
 app.config['SESSION_PERMANENT'] = False
 
@@ -79,9 +84,11 @@ def init_db():
 
     if not cur.fetchone():
 
-        username = "admin"
+        username = os.getenv("ADMIN_USERNAME")
 
-        password = generate_password_hash("admin123")
+        password = generate_password_hash(
+            os.getenv("ADMIN_PASSWORD")
+        )
 
         cur.execute(
             "INSERT INTO admin(username,password) VALUES(?,?)",
@@ -94,16 +101,14 @@ def init_db():
 # Initialize database
 init_db()
 
-# HOME PAGE
 @app.route('/')
 def home():
 
-    return redirect('/winner')
-
+    return render_template('winner.html')
 # ADMIN LOGIN
 @app.route('/login', methods=['GET','POST'])
 def login():
-
+    
     if request.method == 'POST':
 
         username = request.form['username']
@@ -279,66 +284,16 @@ def update_settings():
 
     return redirect('/dashboard')
 
-# SELECT WINNER
+# SELECT WINNER MANUALLY
 @app.route('/select_winner')
 def select_winner():
 
     if 'admin' not in session:
         return redirect('/login')
 
-    conn = sqlite3.connect('database.db')
-    cur = conn.cursor()
+    auto_select_winner()
 
-    # Get settings
-    cur.execute("SELECT * FROM settings LIMIT 1")
-
-    settings = cur.fetchone()
-
-    min_amount = settings[1]
-    draw_type = settings[2]
-    gift_name = settings[3]
-
-    # Get eligible customers
-    cur.execute('''
-    SELECT * FROM customers
-    WHERE amount >= ?
-    ''',
-    (min_amount,)
-    )
-
-    customers = cur.fetchall()
-
-    if customers:
-
-        winner = random.choice(customers)
-
-        winner_name = winner[1]
-
-        # Clear old winner
-        cur.execute("DELETE FROM winner")
-
-        # Insert new winner
-        cur.execute('''
-        INSERT INTO winner
-        (winner_name,gift,draw_type,date)
-        VALUES(?,?,?,?)
-        ''',
-        (
-            winner_name,
-            gift_name,
-            draw_type,
-            datetime.now().strftime("%Y-%m-%d")
-        ))
-
-        conn.commit()
-
-        flash("Winner Selected Successfully!")
-
-    else:
-
-        flash("No Eligible Customers Found!")
-
-    conn.close()
+    flash("Winner Selected Successfully!")
 
     return redirect('/winner')
 
@@ -541,6 +496,73 @@ def delete_customer(id):
     flash("Customer Deleted Successfully!")
 
     return redirect('/customers')
+
+# AUTOMATIC WINNER SELECTION
+def auto_select_winner():
+
+    conn = sqlite3.connect('database.db')
+    cur = conn.cursor()
+
+    # Get settings
+    cur.execute("SELECT * FROM settings LIMIT 1")
+
+    settings = cur.fetchone()
+
+    if not settings:
+        conn.close()
+        return
+
+    min_amount = settings[1]
+    draw_type = settings[2]
+    gift_name = settings[3]
+
+    # Get eligible customers
+    cur.execute('''
+    SELECT * FROM customers
+    WHERE amount >= ?
+    ''',
+    (min_amount,)
+    )
+
+    customers = cur.fetchall()
+
+    if customers:
+
+        winner = random.choice(customers)
+
+        winner_name = winner[1]
+
+        # Clear old winner
+        cur.execute("DELETE FROM winner")
+
+        # Save new winner
+        cur.execute('''
+        INSERT INTO winner
+        (winner_name,gift,draw_type,date)
+        VALUES(?,?,?,?)
+        ''',
+        (
+            winner_name,
+            gift_name,
+            draw_type,
+            datetime.now().strftime("%Y-%m-%d")
+        ))
+
+        conn.commit()
+
+    conn.close()
+
+# START SCHEDULER
+scheduler = BackgroundScheduler()
+
+# Automatic winner every 7 days
+scheduler.add_job(
+    auto_select_winner,
+    'interval',
+    days=7
+)
+
+scheduler.start()
 
 # LOGOUT
 @app.route('/logout')
