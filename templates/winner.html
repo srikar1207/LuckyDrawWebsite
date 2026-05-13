@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Winner</title>
+
+    <link rel="stylesheet" href="/static/admin.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>🏆 Lucky Draw Winner 🏆</h1>
+
+    {% if data %}
+
+        <div class="card">
+
+            <h2>Winner Name</h2>
+
+            <p>{{ data[1] }}</p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Gift</h2>
+
+            <p>{{ data[2] }}</p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Draw Type</h2>
+
+            <p>{{ data[3] }}</p>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Date</h2>
+
+            <p>{{ data[4] }}</p>
+
+        </div>
+
+    {% else %}
+
+        <h2>No Winner Selected Yet</h2>
+
+    {% endif %}
+
+</div>
+
+</body>
+
+</html>

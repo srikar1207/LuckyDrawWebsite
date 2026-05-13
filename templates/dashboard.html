@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="/static/admin.css">
+
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>Admin Dashboard</h1>
+
+    <div class="card">
+
+        <h2>Total Customers</h2>
+
+        <p>{{ total_customers }}</p>
+
+    </div>
+
+    <div class="card">
+
+        <h2>Eligible Customers</h2>
+
+        <p>{{ eligible_customers }}</p>
+
+    </div>
+
+    <form action="/update_settings" method="POST">
+
+        <h2>Minimum Purchase Amount</h2>
+
+        <input
+            type="number"
+            name="min_amount"
+            value="{{ settings[1] }}"
+            required
+        >
+
+        <h2>Draw Type</h2>
+
+        <select name="draw_type">
+
+            <option value="Weekly">
+                Weekly
+            </option>
+
+            <option value="Monthly">
+                Monthly
+            </option>
+
+        </select>
+
+        <h2>Gift Name</h2>
+
+        <input
+            type="text"
+            name="gift_name"
+            value="{{ settings[3] }}"
+            required
+        >
+
+        <button type="submit">
+            Save Settings
+        </button>
+
+    </form>
+
+    <a href="/register_customer">
+        Register Customer
+    </a>
+
+    <a href="/customers">
+        View Customers
+    </a>
+
+    <a href="/select_winner">
+        Select Winner
+    </a>
+
+    <a href="/winner">
+        View Winner Page
+    </a>
+
+    <a href="/change_password">
+        Change Password
+    </a>
+
+    <a href="/logout">
+        Logout
+    </a>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,140 @@
+body{
+
+    font-family:Arial;
+
+    background:linear-gradient(to right,#141e30,#243b55);
+
+    color:white;
+}
+
+.login-box,
+.dashboard{
+
+    width:450px;
+
+    margin:50px auto;
+
+    background:white;
+
+    color:black;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:0px 0px 20px rgba(0,0,0,0.4);
+
+    text-align:center;
+}
+
+input,
+select{
+
+    width:100%;
+
+    padding:12px;
+
+    margin:10px 0;
+
+    border-radius:8px;
+
+    border:1px solid #ccc;
+}
+
+button,
+a{
+
+    display:block;
+
+    width:100%;
+
+    padding:12px;
+
+    margin-top:15px;
+
+    background:#007bff;
+
+    color:white;
+
+    text-decoration:none;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+button:hover,
+a:hover{
+
+    background:#0056b3;
+}
+
+.card{
+
+    background:#f5f5f5;
+
+    padding:15px;
+
+    margin:15px 0;
+
+    border-radius:10px;
+}
+.customer-container{
+
+    width:95%;
+
+    margin:30px auto;
+
+    background:white;
+
+    color:black;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:0px 0px 20px rgba(0,0,0,0.3);
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    margin-top:20px;
+}
+
+table th{
+
+    background:#007bff;
+
+    color:white;
+
+    padding:12px;
+}
+
+table td{
+
+    padding:12px;
+
+    border:1px solid #ddd;
+
+    text-align:center;
+}
+
+.delete-btn{
+
+    background:red !important;
+
+    padding:8px !important;
+}
+
+.back-btn{
+
+    width:250px !important;
+
+    margin:auto;
+}

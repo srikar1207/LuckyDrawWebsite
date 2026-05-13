@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Customers</title>
+
+    <link rel="stylesheet" href="/static/admin.css">
+
+</head>
+
+<body>
+
+<div class="customer-container">
+
+    <h1>Registered Customers</h1>
+
+    <a class="back-btn" href="/dashboard">
+        Back To Dashboard
+    </a>
+
+    <form action="/search_customers" method="POST">
+
+        <input
+            type="text"
+            name="keyword"
+            placeholder="Search Name or Mobile"
+            required
+        >
+
+        <button type="submit">
+            Search
+        </button>
+
+    </form>
+
+    <a class="back-btn" href="/export_customers">
+        Export CSV
+    </a>
+
+    <table>
+
+        <tr>
+
+            <th>ID</th>
+            <th>Name</th>
+            <th>Mobile</th>
+            <th>Amount</th>
+            <th>Eligible</th>
+            <th>Date</th>
+            <th>Action</th>
+
+        </tr>
+
+        {% for customer in customers %}
+
+        <tr>
+
+            <td>{{ customer[0] }}</td>
+            <td>{{ customer[1] }}</td>
+            <td>{{ customer[2] }}</td>
+            <td>₹ {{ customer[3] }}</td>
+            <td>{{ customer[4] }}</td>
+            <td>{{ customer[5] }}</td>
+
+            <td>
+
+                <a
+                    class="delete-btn"
+                    href="/delete_customer/{{ customer[0] }}"
+                    onclick="return confirm('Delete This Customer?')"
+                >
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</div>
+
+</body>
+
+</html>
