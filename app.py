@@ -104,7 +104,21 @@ init_db()
 @app.route('/')
 def home():
 
-    return render_template('winner.html')
+    conn = sqlite3.connect('database.db')
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT * FROM winner ORDER BY id DESC LIMIT 1"
+    )
+
+    data = cur.fetchone()
+
+    conn.close()
+
+    return render_template(
+        'winner.html',
+        data=data
+    )
 # ADMIN LOGIN
 @app.route('/login', methods=['GET','POST'])
 def login():
